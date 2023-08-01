@@ -7,7 +7,7 @@ class ProductManager {
     async addProduct(product) {
         try {
           if (product.code && await this.getProductByCode(product.code)) {
-            throw new Error('Ya existe un producto con el mismo código');
+            throw new Error('Ya existe un producto ');
           }
           const result = await productsModel.create(product);
           return result;
