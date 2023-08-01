@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "title": "tess",
+    "description": "test descripcion",
+    "price": 1000,
+    "thumbnails": "imgs.png",
+    "code": "ABCCODES111a1",
+    "stock": 9999,
+    "category": "categorias",
+    "status": true
+  },
+  {
+    "id": 3,
+    "title": "tess",
+    "description": "test descripcion",
+    "price": 1000,
+    "thumbnails": "imgs.png",
+    "code": "ABCCODES111a1",
+    "stock": 9999,
+    "category": "categorias",
+    "status": true
+  }
+]
