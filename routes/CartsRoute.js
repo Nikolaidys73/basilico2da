@@ -2,6 +2,7 @@ import express from 'express';
 import CartManagerFS from '../dao/fileSystem/CartManager.js';
 import cartManagerMongo from '../dao/mongoDB/CartManager.js';
 import dotenv from 'dotenv';
+import isAuth from '../middlewares/isAuth.js';
 
 dotenv.config();
 
@@ -24,6 +25,8 @@ switch (process.env.DB) {
 }
 // const productManager = new ProductManager();
 
+cartRoute.use(isAuth);
+
 cartRoute.get('/:cid', async (req, res) => {
   try {
     const cid = req.params.cid;
@@ -41,7 +44,7 @@ initializeLastCartId();
 cartRoute.post('/', (req, res) => {
   try {
     cartManager.createCart();
-    res.json({ message: 'Carrito agregado con éxito.' });
+    res.json({ message: 'Carrito agragado con éxito.' });
   } catch (error) {
     res.status(500).json({ detailError: error.message, error: 'Error al agregar carrito' });
   }
