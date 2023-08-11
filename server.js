@@ -47,7 +47,7 @@ app.use(express.static(path.join(process.cwd(), 'public')));
 
 app.use(
   session({
-    secret: 'Mayu2023',
+    secret: 'niko2023',
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false },
