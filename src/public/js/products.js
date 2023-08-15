@@ -3,7 +3,6 @@ const socket = io();
 function updateProductos(products) {
     const tableBody = document.querySelector('.table tbody');
     tableBody.innerHTML = '';
-    console.log('entrando');
     products.forEach((product) => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -20,4 +19,22 @@ function updateProductos(products) {
     });
 }
 
+function logout() {
+    socket.emit('logout');
+}
+
+function handleLogOut() {
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+}
+
+function updateUser(user) {
+    if (user) localStorage.setItem('user', user);
+}
+
+if (localStorage.getItem('user')) document.getElementById('usuario').innerText = 'Bienvenido ' + localStorage.getItem('user') + '!';
+
+document.getElementById('logoutBtn').addEventListener('click', logout);
+socket.on('logout', handleLogOut);
 socket.on('actualizarProductos', updateProductos);
+socket.on('loginGithub', updateUser);

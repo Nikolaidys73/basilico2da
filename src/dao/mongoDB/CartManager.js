@@ -1,5 +1,3 @@
-
-
 import { cartsModel } from '../mongodb/models/carrito.model.js';
 import ProductsManager from './ProductManager.js';
 

@@ -6,11 +6,19 @@ import isAuth from '../middlewares/isAuth.js';
 
 dotenv.config();
 
-// import ProductManager from '../dao/fileSystem/ProductManager.js'; ( POR FAVOR )
+// import ProductManager from '../dao/fileSystem/ProductManager.js';
 import { initializeLastCartId } from '../helpers.js';
 
 const cartRoute = express.Router();
-
+/*
+**********************
+Para alternar las base de datos se puede cambiar el .env (BD).
+Posibles valores:
+1- fs (filesystem)
+2- mongodb
+Por defecto será mongoDB
+**********************
+*/
 let cartManager = null;
 switch (process.env.DB) {
   case 'fs':

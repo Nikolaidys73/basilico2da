@@ -3,6 +3,7 @@ import ProductManagerMongo from '../dao/mongoDB/ProductManager.js';
 import ProductManagerFS from '../dao/fileSystem/ProductManager.js';
 import dotenv from 'dotenv';
 import isAuth from '../middlewares/isAuth.js';
+
 dotenv.config();
 
 let productManager = null;
@@ -21,10 +22,17 @@ switch (process.env.DB) {
 // Manejo de rutas para productos
 const productsRoute = express.Router();
 
+/*
+**********************
+Para alternar las base de datos se puede cambiar el .env (BD).
+Posibles valores:
+1- fs (filesystem)
+2- mongodb
+Por defecto será mongoDB
+**********************
+*/
 
-
-
-// Listar todos los productosproductsRoute.use(isAuth);
+productsRoute.use(isAuth);
 // Listar todos los productos
 productsRoute.get('/', async (req, res) => {
   try {
