@@ -1,7 +1,7 @@
-import { userModel } from '../mongoDB/models/usuario.model.js';
+import { userModel } from '../models/usuario.model.js';
 import bcrypt from 'bcrypt';
 
-class UserManager {
+class UserController {
     async saveUser({ nombre, apellido, email, password, github }) {
         try {
             const existingUser = await userModel.findOne({ email }).lean();
@@ -58,4 +58,4 @@ class UserManager {
 };
 
 
-export default UserManager;
+export default UserController;

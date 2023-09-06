@@ -1,5 +1,7 @@
-import { cartsModel } from '../mongodb/models/carrito.model.js';
-import ProductsManager from './ProductManager.js';
+
+
+import { cartsModel } from '../models/carrito.model.js';
+import ProductsManager from './controllers.products.js';
 
 
 class CartsManager {

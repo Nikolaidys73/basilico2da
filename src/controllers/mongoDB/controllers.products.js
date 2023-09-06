@@ -1,13 +1,11 @@
+import { productsModel } from '../models/productos.model.js';
 
-
-import { productsModel } from '../mongodb/models/productos.model.js';
-
-class ProductManager {
+class ProductController {
 
     async addProduct(product) {
         try {
           if (product.code && await this.getProductByCode(product.code)) {
-            throw new Error('Ya existe un producto ');
+            throw new Error('Ya existe un producto con el mismo código');
           }
           const result = await productsModel.create(product);
           return result;
@@ -95,4 +93,4 @@ class ProductManager {
 
 }
 
-export default ProductManager;
+export default ProductController;

@@ -1,8 +1,11 @@
+
+
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import config from './config.js';
 
 dotenv.config();
-const uri = process.env.MONGODB_URI;
+const uri = config.MONGODB_URI;
 
 const dbConnection = () => {
     mongoose.connect( uri, {

@@ -7,21 +7,23 @@ import { Server } from 'socket.io';
 import bodyParser from 'body-parser';
 import Handlebars from 'handlebars';
 
-import productsRoute from './routes/ProductsRoute.js';
-import cartRoute from './routes/CartsRoute.js';
-import viewsRouter from './routes/ViewsRouter.js';
+import productsRoute from './routes/routes.products.js';
+import cartRoute from './routes/routes.carts.js';
+import viewsRouter from './routes/routes.views.js';
 import dbConnection from './utils/db.js';
+import __dirname from './utils/utils.js';
 
-import ChatManager from './dao/mongoDB/ChatManager.js';
-import UserManager from './dao/mongoDB/UserManager.js';
+import ChatController from './controllers/mongoDB/controllers.chats.js';
+import UserController from './controllers/mongoDB/controllers.user.js';
 import session from 'express-session';
+import './passport/local-strategy.js';
+import passport from 'passport';
+import config from './utils/config.js';
 
 dotenv.config();
 
-const chatManager = new ChatManager();
-const userManager = new UserManager();
+const chatManager = new ChatController();
 const app = express();
-const PORT = process.env.PORT;
 const httpServer = createServer(app);
 const socketServer = new Server(httpServer);
 
@@ -38,21 +40,22 @@ app.engine('handlebars', engine({
 }));
 
 app.set('view engine', 'handlebars');
-app.set('views', './views');
+app.set('views', path.join(__dirname, 'public/views'));
 /* fin configuracion handlebars */
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(process.cwd(), 'public')));
-
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({
-    secret: 'niko2023',
+    secret: 'Niko1983',
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 socketServer.on('connect', (socket) => {
   console.log('Usuario conectado con el servidor Socket.io');
@@ -63,14 +66,15 @@ socketServer.on('connect', (socket) => {
   });
 
   socket.on('registrarUsuario', async (user) => {
-    const savedUser = await userManager.saveUser(user);
     socketServer.emit('registrarUsuario', savedUser);
   });
 
   socket.on('loginUsuario', async (user) => {
-    const loginUser = await userManager.loginUser(user);
-    socketServer.user = loginUser;
     socketServer.emit('loginUsuario', loginUser);
+  });
+
+  socket.on('loginGithub', async (user) => {
+    socketServer.emit('loginGithub', user);
   });
 
   socket.on('logout', () => {
@@ -108,7 +112,7 @@ app.use(viewsRouter);
 app.use('/api/products', productsRoute);
 app.use('/api/carts', cartRoute);
 
-httpServer.listen(PORT, () => {
-  console.log(`Server corriendo en puerto ${PORT}\nConexión vía ${process.env.DB}`);
+httpServer.listen(config.PORT, () => {
+  console.log(`Server corriendo en puerto ${config.PORT}\nConexión vía ${config.DB}`);
   dbConnection();
 });
