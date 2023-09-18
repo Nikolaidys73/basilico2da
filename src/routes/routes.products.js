@@ -4,6 +4,7 @@ import ProductManagerFS from '../controllers/fileSystem/controllers.products.js'
 import dotenv from 'dotenv';
 import isAuth from '../middlewares/isAuth.js';
 import config from '../utils/config.js';
+import currentMiddleware from '../middlewares/current.js';
 
 dotenv.config();
 
@@ -38,21 +39,17 @@ productsRoute.use(isAuth);
 productsRoute.get('/', async (req, res) => {
   try {
     const baseURL = 'http://localhost:8080/api/products';
-    const page = Number( req.query.page );
-    const sort = req.query.sort;
-    const filter = req.query.filter;
-    const filterValue = req.query.filterValue;
-    const limit = Number( req.query.limit );
-    const products = await productManager.getProducts(
-      limit,
-      page,
-      sort,
-      filter,
-      filterValue
-    );
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const sort = req.query.sort ? req.query.sort : 'asc';
+    const filter = req.query.filter ? req.query.filter : null;
+    const filterValue = req.query.filterValue ? req.query.filterValue : null;
+    const products = await productManager.getProducts(limit, page, sort, filter, filterValue);
+    const plainProducts = products.docs.map((product) => product.toObject({ virtuals: true }));
     const prevPageNumber = products.prevPage;
     const nextPageNumber = products.nextPage;
-
+    const canLogin = req.query.user;
+    if (req.socketServer.user) req.socketServer.sockets.emit('loginGithub', req.socketServer.user.nickname);
     let prevLink;
     let nextLink;
     if (prevPageNumber) {
@@ -65,10 +62,9 @@ productsRoute.get('/', async (req, res) => {
     } else {
       nextLink = null;
     }
-    if (config.DB === 'fs') return res.json(products);
-    res.status(200).json({
+    const finalProducts = {
       status: 'success',
-      payload: products.docs,
+      payload: plainProducts,
       totalPages: products.totalPages,
       prevPage: products.prevPage,
       nextPage: products.nextPage,
@@ -77,13 +73,10 @@ productsRoute.get('/', async (req, res) => {
       page: (!Number(products.page)) ? 1 : products.page,
       prevLink,
       nextLink
-    });
+    }
+    res.status(200).json(finalProducts);
   } catch (error) {
-    res.status(500).json({
-      status: 'error',
-      error: 'Ocurrió un error al obtener los productos.',
-      detailError: error.message
-    });
+    res.status(500).json({ error: 'Ocurrió un error al obtener los productos.', detailError: error.message });
   }
 });
 
@@ -103,19 +96,23 @@ productsRoute.get('/:pid', async (req, res) => {
 });
 
 // Agregar un nuevo producto
-productsRoute.post('/', async (req, res) => {
+productsRoute.post('/', currentMiddleware, async (req, res) => {
   try {
-    await productManager.addProduct(req.body);
-    const products = await productManager.getProducts();
-    req.socketServer.sockets.emit('actualizarProductos', products.docs);
-    res.status(201).json({ message: 'Producto agregado correctamente.' });
+    if (req.userRole === "admin") {
+      await productManager.addProduct(req.body);
+      const products = await productManager.getProducts();
+      req.socketServer.sockets.emit('actualizarProductos', products.docs);
+      res.status(201).json({ message: 'Producto agregado correctamente.' });
+      return;
+    }
+    return res.status(403).json({ message: "No tienes permiso para crear un producto" });
   } catch (error) {
     res.status(400).json({ error: 'Error al agregar el producto.', detailError: error.message });
   }
 });
 
 // Actualizar un producto por su ID
-productsRoute.put('/:pid', async(req, res) => {
+productsRoute.put('/:pid', currentMiddleware, async(req, res) => {
   try {
     const pid = req.params.pid;
     await productManager.updateProduct(pid, req.body);
@@ -128,7 +125,7 @@ productsRoute.put('/:pid', async(req, res) => {
 });
 
 // Eliminar un producto por su ID
-productsRoute.delete('/:pid', async (req, res) => {
+productsRoute.delete('/:pid', currentMiddleware, async (req, res) => {
   try {
     const pid = req.params.pid;
     await productManager.deleteProduct(pid);

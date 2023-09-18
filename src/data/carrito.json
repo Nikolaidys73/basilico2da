@@ -4,21 +4,21 @@
     "products": [
       {
         "id": 1,
-        "title": "",
-        "description": "",
+        "title": "Chupetines",
+        "description": "Leritier de frutilla",
         "price": 10,
         "thumbnail": "imagen1.jpg",
-        "code": "PROD001",
+        "code": "CODE001",
         "stock": 20
       },
       {
         "id": 2,
-        "title": "",
-        "description": "",
-        "price": 100,
+        "title": "Chupetines",
+        "description": "Leritier de frutilla",
+        "price": 10,
         "thumbnail": "imagen1.jpg",
-        "code": "PROD002",
-        "stock": 30
+        "code": "CODE002",
+        "stock": 20
       },
       {
         "product": {
@@ -39,20 +39,20 @@
     "products": [
       {
         "id": 1,
-        "title": "",
-        "description": "",
+        "title": "Chupetines",
+        "description": "Leritier de frutilla",
         "price": 10,
         "thumbnail": "imagen1.jpg",
-        "code": "PROD001",
+        "code": "CODE001",
         "stock": 20
       },
       {
         "id": 2,
-        "title": "",
-        "description": "",
+        "title": "Chupetines",
+        "description": "Leritier de frutilla",
         "price": 10,
         "thumbnail": "imagen1.jpg",
-        "code": "PROD002",
+        "code": "CODE002",
         "stock": 20
       }
     ]
