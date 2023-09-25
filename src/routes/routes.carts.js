@@ -2,7 +2,8 @@ import express from 'express';
 import CartManagerFS from '../controllers/fileSystem/controllers.carts.js';
 import cartManagerMongo from '../controllers/mongoDB/controllers.carts.js';
 import dotenv from 'dotenv';
-import isAuth from '../middlewares/isAuth.js';
+import isA.
+ uth from '../middlewares/isAuth.js';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ Para alternar las base de datos se puede cambiar el .env (BD).
 Posibles valores:
 1- fs (filesystem)
 2- mongodb
-Por defecto será mongoDB
+Por defecto será mongoDB 
 **********************
 */
 let cartManager = null;

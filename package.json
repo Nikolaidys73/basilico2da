@@ -23,7 +23,7 @@
     "socket.io-session": "^0.0.5"
   },
   "type": "module",
-  "name": "basilico2da",
+  "name": "preentregafinalbackendmarianomartini",
   "version": "1.0.0",
   "main": "./src/server.js",
   "scripts": {
