@@ -36,6 +36,10 @@ class CartsManager {
         const cart = await this.cartRepository.findById(id);
         return cart;
     }
+    async getCartByUserId(id) {
+        const cart = await this.cartRepository.findByUserId(id);
+        return cart;
+    }
 
     async addProductToCart(cartId, productId, user) {
         try {
@@ -64,12 +68,15 @@ class CartsManager {
 
     async deleteProductFromCart(cartId, productId) {
         const cart = await this.getCartById(cartId);
+    
         cart.products = cart.products.filter(
-            (item) => item.product._id.toString() !== productId
+            (item) => !item.product._id.equals(productId)
         );
+    
+        // cart.products = productos;
         await this.cartRepository.save(cart);
     }
-
+    
     async deleteAllProductsFromCart(cartId) {
         const cart = await this.getCartById(cartId);
         cart.products = [];
@@ -135,6 +142,9 @@ class CartsManager {
         const cart = await this.getCartById(cartId);
         cart.products = [];
         await this.cartRepository.save(cart);
+    }
+    async removeCart(cartId) {
+        await this.cartRepository.remove(cartId);
     }
 }
 

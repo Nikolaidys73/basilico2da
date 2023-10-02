@@ -9,6 +9,7 @@ import Handlebars from 'handlebars';
 
 import productsRoute from './routes/routes.products.js';
 import cartRoute from './routes/routes.carts.js';
+import ticketRoute from './routes/routes.ticket.js';
 import viewsRouter from './routes/routes.views.js';
 import dbConnection from './utils/db.js';
 import __dirname from './utils/utils.js';
@@ -19,6 +20,7 @@ import session from 'express-session';
 import './passport/local-strategy.js';
 import passport from 'passport';
 import config from './utils/config.js';
+import ProductController from './controllers/mongoDB/controllers.products.js';
 
 dotenv.config();
 
@@ -111,6 +113,24 @@ app.get('/', (req, res) => {
 app.use(viewsRouter);
 app.use('/api/products', productsRoute);
 app.use('/api/carts', cartRoute);
+app.use('/api/ticket', ticketRoute);
+app.use('/api/mockingproducts', (req, res) => {
+  const productController = new ProductController();
+  let { cant } = req.query;
+  if (!cant) cant = 100;
+  const products = productController.createMockProduct(cant);
+  if (!products) {
+    return res.status(500).json({
+      ok: false,
+      message: 'No se pudieron crear los productos',
+    })
+  }
+  return res.status(200).json({
+    ok: true,
+    cantidad_productos: cant,
+    products,
+  })
+});
 
 httpServer.listen(config.PORT, () => {
   console.log(`Server corriendo en puerto ${config.PORT}\nConexión vía ${config.DB}`);

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { nanoid } from "nanoid";
 
 const collection = "tickets";
 
@@ -11,6 +12,7 @@ const TicketsSchema = new mongoose.Schema( {
     },
     purchase_datetime: {
         type: Date,
+        default: Date.now,
         required: true
     },
     amount: {
@@ -20,6 +22,10 @@ const TicketsSchema = new mongoose.Schema( {
     purchaser: {
         type: String,
         required: true
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts",
     },
     
 
